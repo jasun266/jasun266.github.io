@@ -22,12 +22,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useLenis(ScrollTrigger.update);
 
-  // New route: start at the top (or the hash target) and re-measure triggers.
+  // New route or reload: once the pinned sections exist, re-measure and jump to the
+  // top (or the hash target). The browser's own restore runs before the pins and
+  // makes the page jump, so it's switched off in the <head> script.
   useEffect(() => {
-    const lenis = lenisRef.current?.lenis;
-    const target = document.getElementById(window.location.hash.slice(1));
-    lenis?.scrollTo(target ?? 0, { offset: target ? -80 : 0, immediate: true, force: true });
-    ScrollTrigger.refresh();
+    const id = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      const target = document.getElementById(window.location.hash.slice(1));
+      const y = target ? target.getBoundingClientRect().top + window.scrollY - 80 : 0;
+      const lenis = lenisRef.current?.lenis;
+      if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
+      else window.scrollTo(0, y);
+    });
+    return () => cancelAnimationFrame(id);
   }, [pathname]);
 
   return (

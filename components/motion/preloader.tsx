@@ -17,4 +17,4 @@ export function Preloader() {
 }
 
 export const preloaderScript = `try{sessionStorage.getItem('pl')?document.documentElement.setAttribute('data-preloaded',''):sessionStorage.setItem('pl','1')}catch(e){}`;
-export const themeScript = `try{localStorage.getItem('theme')==='light'&&document.documentElement.classList.remove('dark')}catch(e){}`;
+export const themeScript = `try{localStorage.getItem('theme')==='light'&&document.documentElement.classList.remove('dark')}catch(e){}history.scrollRestoration='manual';`;

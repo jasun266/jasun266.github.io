@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import type { Project } from "@/lib/data";
 import type { Media } from "@/lib/media";
 import { Eyebrow, SplitHeading } from "@/components/motion/split-heading";
@@ -50,6 +50,9 @@ export function ProjectGallery({ items }: { items: { project: Project; media: Me
             },
           );
         });
+        // The pin adds scroll space above later triggers; re-measure in page order.
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
       });
     },
     { scope: section },
