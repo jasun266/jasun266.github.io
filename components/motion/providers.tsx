@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { MotionConfig } from "motion/react";
-import { ReactLenis, type LenisRef } from "lenis/react";
+import { ReactLenis, useLenis, type LenisRef } from "lenis/react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // Lenis smooth scroll driven by GSAP's ticker so ScrollTrigger stays in sync.
@@ -12,29 +12,27 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<LenisRef>(null);
   const pathname = usePathname();
 
+  // ReactLenis creates its instance after this effect runs, so look it up every frame.
   useEffect(() => {
-    const lenis = lenisRef.current?.lenis;
-    const tick = (time: number) => lenis?.raf(time * 1000);
-    const off = lenis?.on("scroll", ScrollTrigger.update);
+    const tick = (time: number) => lenisRef.current?.lenis?.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
-    return () => {
-      off?.();
-      gsap.ticker.remove(tick);
-    };
+    return () => gsap.ticker.remove(tick);
   }, []);
+
+  useLenis(ScrollTrigger.update);
 
   // New route: start at the top (or the hash target) and re-measure triggers.
   useEffect(() => {
     const lenis = lenisRef.current?.lenis;
-    const hash = window.location.hash;
-    lenis?.scrollTo(hash && document.querySelector(hash) ? hash : 0, { immediate: true, force: true });
+    const target = document.getElementById(window.location.hash.slice(1));
+    lenis?.scrollTo(target ?? 0, { offset: target ? -80 : 0, immediate: true, force: true });
     ScrollTrigger.refresh();
   }, [pathname]);
 
   return (
     <MotionConfig reducedMotion="user">
-      <ReactLenis root ref={lenisRef} options={{ autoRaf: false, lerp: 0.1 }} />
+      <ReactLenis root ref={lenisRef} options={{ autoRaf: false, lerp: 0.1, anchors: { offset: -80 } }} />
       {children}
     </MotionConfig>
   );
