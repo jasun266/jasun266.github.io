@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
 
 // Pins the hero for a scroll-scrubbed "build": the name parts like curtains, the
 // floor tilts, the live editor takes centre stage while its code types itself,
@@ -9,6 +9,9 @@ import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 // results. Reduced motion keeps the static hero.
 export function HeroStage({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLElement>(null);
+  // The hero stays put with CSS sticky inside a tall track, not a GSAP pin: pinning
+  // moves the section in the DOM (restarting the name's entrance) and locks its width.
+  const track = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
@@ -25,10 +28,9 @@ export function HeroStage({ children }: { children: React.ReactNode }) {
         const tl = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
-            trigger: section,
+            trigger: track.current,
             start: "top top",
-            end: "+=160%",
-            pin: true,
+            end: "bottom bottom",
             scrub: 1,
             invalidateOnRefresh: true,
           },
@@ -67,12 +69,7 @@ export function HeroStage({ children }: { children: React.ReactNode }) {
           { autoAlpha: 0, y: 40, scale: 0.92 },
           { autoAlpha: 1, y: 0, scale: 1, stagger: 0.06, duration: 0.18, ease: "power2.out" },
           0.68,
-        ).to({}, { duration: 0.12 }); // brief hold before the pin releases
-
-        // This pin adds scroll space above every later trigger (the Work gallery
-        // pins too), so re-measure them all in page order.
-        ScrollTrigger.sort();
-        ScrollTrigger.refresh();
+        ).to({}, { duration: 0.12 }); // brief hold before the hero scrolls away
 
         // Pointer depth: the name drifts against the cursor.
         const nx = gsap.quickTo(q("[data-hero=names]")[0], "x", { duration: 0.8, ease: "power3" });
@@ -87,8 +84,10 @@ export function HeroStage({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <section id="top" ref={ref} className="relative isolate flex min-h-svh flex-col overflow-hidden">
-      {children}
-    </section>
+    <div ref={track} className="relative motion-safe:h-[260svh]">
+      <section id="top" ref={ref} className="sticky top-0 isolate flex min-h-svh flex-col overflow-hidden">
+        {children}
+      </section>
+    </div>
   );
 }
