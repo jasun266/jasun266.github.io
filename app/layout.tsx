@@ -38,10 +38,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript + preloaderScript }} />
       </head>
-      <body className="min-h-dvh overflow-x-clip">
+      {/* Extensions (e.g. Grammarly) add attributes to <body> before hydration. */}
+      <body className="min-h-dvh overflow-x-clip" suppressHydrationWarning>
         <a
           href="#main"
-          className="sr-only z-[100] rounded-full bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
+          className="sr-only z-100 rounded-full bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
         >
           Skip to content
         </a>
