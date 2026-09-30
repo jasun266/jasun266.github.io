@@ -261,6 +261,217 @@ html.lenis body {
     translate: 0 24px;
   }
 }
+/* The header stays put while page content transitions underneath it. */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* Hero: the name rises out of masked lines as the preloader lifts. */
+html {
+  --hero-delay: 0.95s;
+}
+html[data-preloaded] {
+  --hero-delay: 0.1s;
+}
+.hero-word {
+  display: inline-block;
+  transform-origin: 0 100%;
+  animation: hero-rise 1.2s var(--ease-out-expo) both;
+  animation-delay: calc(var(--hero-delay) + var(--i) * 90ms);
+}
+.hero-fade {
+  animation: hero-fade 1s var(--ease-out-expo) both;
+  animation-delay: calc(var(--hero-delay) + 500ms + var(--d, 0) * 110ms);
+}
+@keyframes hero-rise {
+  from {
+    transform: translateY(108%) rotate(5deg);
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+
+/* Soft aurora (also the fallback when the WebGL hero doesn't load). */
+.aurora {
+  background:
+    radial-gradient(38% 48% at 18% 28%, color-mix(in oklab, var(--violet) 30%, transparent), transparent 70%),
+    radial-gradient(32% 42% at 82% 18%, color-mix(in oklab, var(--cyan) 20%, transparent), transparent 70%),
+    radial-gradient(42% 50% at 72% 82%, color-mix(in oklab, var(--pink) 18%, transparent), transparent 70%);
+  animation: aurora-drift 20s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift {
+  to {
+    transform: translate3d(2%, -4%, 0) scale(1.12) rotate(3deg);
+  }
+}
+
+@utility grid-lines {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 10%, transparent 72%);
+}
+
+.scroll-cue {
+  animation: scroll-cue 2.2s var(--ease-in-out-quart) infinite;
+}
+@keyframes scroll-cue {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(200%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 50s linear infinite;
+}
+.marquee-track[data-reverse] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pointer-following glow for cards (components/motion/spotlight.tsx). */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(
+    420px circle at var(--x, 50%) var(--y, 50%),
+    color-mix(in oklab, var(--tone, var(--violet)) 16%, transparent),
+    transparent 65%
+  );
+  transition: opacity 400ms;
+}
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Button whose fill rises from the bottom on hover. */
+.btn-fill {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 400ms var(--ease-out-expo);
+}
+.btn-fill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--foreground);
+  transform: translateY(101%);
+  transition: transform 500ms var(--ease-out-expo);
+}
+.btn-fill:hover {
+  color: var(--background);
+}
+.btn-fill:hover::before {
+  transform: translateY(0);
+}
+
+/* Project media fallback: drifting accent glow + shimmering skeleton. */
+.float-slow {
+  animation: float-slow 9s ease-in-out infinite alternate;
+}
+@keyframes float-slow {
+  to {
+    transform: translate3d(6%, -8%, 0) scale(1.15);
+  }
+}
+.shimmer {
+  background:
+    linear-gradient(90deg, transparent, color-mix(in oklab, var(--foreground) 14%, transparent), transparent) 0 0 /
+      200% 100% no-repeat,
+    color-mix(in oklab, var(--foreground) 7%, transparent);
+  animation: shimmer 2.4s linear infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position:
+      150% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      -50% 0,
+      0 0;
+  }
+}
+
+/* Diagrams: arrowheads appear once their line has drawn; packets glow. */
+.diagram[data-drawing] [data-edge]:not([data-drawn]) {
+  marker-end: none;
+}
+.packet {
+  filter: drop-shadow(0 0 4px var(--tone));
+}
+
+.bob {
+  display: inline-block;
+  animation: bob 3.2s ease-in-out calc(var(--i) * -0.8s) infinite alternate;
+}
+@keyframes bob {
+  to {
+    transform: translateY(-6%) rotate(calc((var(--i) - 1) * 3deg));
+  }
+}
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .preloader,
+  body::after {
+    display: none !important;
+  }
+  :root,
+  .dark {
+    --background: #fff;
+    --foreground: #111118;
+    --card: #fff;
+    --muted-foreground: #4a4a57;
+    --border: #dcdce4;
+    --primary: #5b2fc4;
+    --violet: #5b2fc4;
+  }
+  html.dark {
+    color-scheme: light;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,

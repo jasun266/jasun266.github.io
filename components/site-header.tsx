@@ -35,8 +35,9 @@ export function SiteHeader() {
 
   return (
     <header
+      style={{ viewTransitionName: "site-header" }}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 print:hidden",
         scrolled || open
           ? "border-b border-border bg-background/70 backdrop-blur-xl"
           : "border-b border-transparent",
