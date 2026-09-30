@@ -24,6 +24,7 @@ export const site = {
 
 export const stats = [
   { value: 4, suffix: "+", label: "years shipping production apps" },
+  { value: 100, suffix: "+", label: "daily users on Asthafy Mart" },
   { value: 30, suffix: "+", label: "daily users on the Lumiere portal" },
   { value: 4, suffix: "", label: "live products" },
 ];

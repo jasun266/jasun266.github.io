@@ -19,7 +19,7 @@ const personJsonLd = {
   jobTitle: site.title,
   url: site.url,
   email: `mailto:${site.email}`,
-  image: `${site.url}/images/jasun.webp`,
+  image: `${site.url}/images/jasun-cutout.webp`,
   address: { "@type": "PostalAddress", addressLocality: "Dhaka", addressCountry: "BD" },
   worksFor: { "@type": "Organization", name: "Vista Systech Limited" },
   alumniOf: { "@type": "CollegeOrUniversity", name: "American International University-Bangladesh" },

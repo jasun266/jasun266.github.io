@@ -305,6 +305,54 @@ html[data-preloaded] {
   }
 }
 
+/* Cut-out portrait: rim-lit so the dark outfit separates from the backdrop. */
+.rim-light {
+  filter: drop-shadow(0 0 1px rgb(255 255 255 / 0.35))
+    drop-shadow(0 0 28px color-mix(in oklab, var(--violet) 45%, transparent));
+}
+
+/* Hero editor: blinking caret, and bugs that splat when squashed. */
+.caret {
+  animation: caret 1s steps(1) infinite;
+}
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+.play-cta {
+  animation: play-pulse 2.4s ease-in-out infinite;
+}
+@keyframes play-pulse {
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--pink) 18%, transparent);
+  }
+}
+.bug {
+  transition:
+    opacity 250ms,
+    scale 250ms var(--ease-out-expo);
+}
+.bug[data-dead] {
+  opacity: 0;
+  scale: 1.8;
+  pointer-events: none;
+}
+.halo {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--violet) 42%, transparent),
+    color-mix(in oklab, var(--pink) 14%, transparent) 55%,
+    transparent
+  );
+  animation: halo 5s ease-in-out infinite alternate;
+}
+@keyframes halo {
+  to {
+    opacity: 0.55;
+  }
+}
+
 /* Soft aurora (also the fallback when the WebGL hero doesn't load). */
 .aurora {
   background:
