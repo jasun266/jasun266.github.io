@@ -71,17 +71,20 @@ export function Cursor() {
         className="absolute top-0 left-0 -mt-1 -ml-1 size-2 rounded-full bg-foreground mix-blend-difference"
       />
       <div ref={ring} style={{ opacity: 0 }} className="absolute top-0 left-0">
+        {/* Hollow ring, label hung below it: the cursor never hides what's under the pointer. */}
         <div
-          className="-translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full border border-foreground/40 font-mono text-[11px] uppercase tracking-widest text-primary-foreground transition-[width,height,background-color,border-color] duration-300 ease-(--ease-out-expo)"
+          className="-translate-x-1/2 -translate-y-1/2 rounded-full border border-foreground/40 transition-[width,height,border-color] duration-300 ease-out-expo"
           style={{
-            width: label ? 84 : hovering ? 56 : 34,
-            height: label ? 84 : hovering ? 56 : 34,
-            backgroundColor: label ? "var(--violet)" : "transparent",
-            borderColor: label ? "transparent" : undefined,
+            width: label ? 64 : hovering ? 56 : 34,
+            height: label ? 64 : hovering ? 56 : 34,
+            borderColor: label ? "var(--violet)" : undefined,
           }}
-        >
-          {label}
-        </div>
+        />
+        {label && (
+          <span className="absolute top-10 left-0 -translate-x-1/2 rounded-full bg-background/75 px-2.5 py-1 font-mono text-[10px] tracking-widest whitespace-nowrap text-primary uppercase backdrop-blur-sm">
+            {label}
+          </span>
+        )}
       </div>
     </div>
   );

@@ -13,8 +13,16 @@ test("the labelled cursor appears over media, never over text you point at", asy
   await card.locator("h3 a").hover();
   await expect(label("View")).toHaveCount(0);
 
-  await card.locator("[data-parallax]").hover();
+  // Over the preview the label shows, but nothing opaque sits under the pointer:
+  // the ring is hollow and the label hangs below it (owner report: "still").
+  const media = card.locator("[data-parallax]");
+  await media.hover();
   await expect(label("View")).toBeVisible();
+  const box = (await media.boundingBox())!;
+  const pointerY = box.y + box.height / 2;
+  await expect.poll(async () => (await label("View").boundingBox())!.y).toBeGreaterThan(pointerY + 24);
+  const ringBg = await label("View").evaluate((el) => getComputedStyle(el.previousElementSibling!).backgroundColor);
+  expect(ringBg).toBe("rgba(0, 0, 0, 0)");
 
   await page.goto("/#contact");
   await page.getByText("jasun266@gmail.com", { exact: true }).first().hover();
