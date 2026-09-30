@@ -24,7 +24,6 @@ export function CopyEmail({ email }: { email: string }) {
       <button
         type="button"
         onClick={copy}
-        data-cursor="Copy"
         className="group glass flex w-full items-center justify-between gap-4 rounded-[1.75rem] p-5 text-left transition-colors hover:border-primary/40 sm:p-6"
       >
         <span>

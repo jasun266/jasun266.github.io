@@ -15,10 +15,10 @@ export function ProjectCard({ project, media, index }: { project: Project; media
   const [hover, setHover] = useState(false);
   const rx = useSpring(0, spring);
   const ry = useSpring(0, spring);
+  const href = `/projects/${project.slug}/`;
 
   return (
     <article
-      data-cursor="View"
       className="group relative shrink-0 lg:motion-safe:w-[min(78vw,72rem)]"
       style={{ "--tone": `var(--${project.accent})` } as React.CSSProperties}
       onPointerEnter={() => setHover(true)}
@@ -38,8 +38,11 @@ export function ProjectCard({ project, media, index }: { project: Project; media
         style={{ rotateX: rx, rotateY: ry, transformPerspective: 1400 }}
         className="grid items-center gap-6 rounded-[2rem] border border-border bg-card/70 p-3 transition-colors duration-500 group-hover:border-(--tone)/40 sm:p-4 lg:grid-cols-[1.45fr_1fr] lg:gap-10"
       >
+        {/* The "View" cursor lives on the preview only, so it never covers text. */}
         <ViewTransition name={`project-${project.slug}`} share="morph" default="none">
-          <MediaFrame project={project} media={media} active={hover} />
+          <Link href={href} tabIndex={-1} aria-hidden data-cursor="View" className="block">
+            <MediaFrame project={project} media={media} active={hover} />
+          </Link>
         </ViewTransition>
 
         <div className="px-3 pb-4 lg:px-2 lg:py-4">
@@ -47,10 +50,7 @@ export function ProjectCard({ project, media, index }: { project: Project; media
             <span className="text-(--tone)">{String(index + 1).padStart(2, "0")}</span> / {project.kind}
           </p>
           <h3 className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-            <Link
-              href={`/projects/${project.slug}/`}
-              className="outline-none after:absolute after:inset-0 after:rounded-[2rem] focus-visible:after:ring-2 focus-visible:after:ring-ring"
-            >
+            <Link href={href} className="transition-colors hover:text-(--tone)">
               {project.title}
             </Link>
           </h3>
@@ -70,16 +70,15 @@ export function ProjectCard({ project, media, index }: { project: Project; media
             ))}
           </ul>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium">
-            <span className="inline-flex items-center gap-2">
+            <Link href={href} tabIndex={-1} className="inline-flex items-center gap-2">
               Case study
               <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </span>
+            </Link>
             <a
               href={project.url}
               target="_blank"
               rel="noreferrer"
-              data-cursor="Visit"
-              className="relative z-10 inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
             >
               Live site <ArrowUpRight className="size-4" />
             </a>
